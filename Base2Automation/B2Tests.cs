@@ -25,7 +25,6 @@ namespace Base2Automation
       isVisible = element.Displayed;
       Assert.IsTrue(isVisible,"O site está on line");
       TestCleanup();
-      TestCleanup();
     }
 
     [TestMethod]
