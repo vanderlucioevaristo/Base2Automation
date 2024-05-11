@@ -9,23 +9,26 @@ namespace Base2Automation
   public class Tarefas
   {
     private IWebDriver driver;
-    private Uri appURL = new Uri("https://mantis-prova.base2.com.br");
+    //private Uri appURL = new Uri("https://mantis-prova.base2.com.br");
+    private Uri appURL = new Uri("http://localhost/mantis");
     private WebElement element;
-    private string user = "VANDER_EVARISTO";
-    private string pwd = "216132";
+    private string user = "administrator";
+    private string pwd = "root";
+    //private string user = "VANDER_EVARISTO";
+    //private string pwd = "216132";
     private Helper helper = new Helper();
 
     #region Test Cases
     [TestMethod]
     [TestCategory("Chrome")]
-    public void Deve_conseguir_Criar_Nova_Tarefa_clicando_no_botao()
+    public void Deve_conseguir_Criar_Nova_Tarefa()
     {
       helper.login(user,pwd,appURL,driver);
       element = helper.elementClassName("fa-edit");
       element.Click();
       IWebElement categoria = helper.elementById("category_id");
       SelectElement selectCategoria = new SelectElement(categoria);
-      selectCategoria.SelectByIndex(0);
+      selectCategoria.SelectByIndex(2);
 
       IWebElement frequencia = helper.elementById("reproducibility");
       SelectElement selectFrequencia = new SelectElement(frequencia);
@@ -33,7 +36,7 @@ namespace Base2Automation
 
       IWebElement gravidade = helper.elementById("severity");
       SelectElement selectGravidade = new SelectElement(gravidade);
-      selectGravidade.SelectByText("grande");
+      selectGravidade.SelectByText("trivial");
 
       IWebElement prioridade = helper.elementById("priority");
       SelectElement selectPrioridade = new SelectElement(prioridade);
@@ -87,10 +90,11 @@ namespace Base2Automation
     [TestCategory("Chrome")]
     public void Deve_conseguir_editar_uma_tarefa_apos_criar()
     {
-      Deve_conseguir_Criar_Nova_Tarefa_clicando_no_botao();
+      Deve_conseguir_Criar_Nova_Tarefa();
       element = helper.elementXPath("//tr//td[@class='bug-id']");
       string bugId = element.GetAttribute("innerText");
-      Deve_abrir_visao_de_tarefas_do_usuario();
+      element = helper.elementClassName("fa-dashboard");
+      element.Click();
 
       if (helper.elementXPath($"//a[text()='{bugId}']").Text.Contains(bugId))
       {

@@ -11,8 +11,11 @@ namespace Base2Automation
   {
     private IWebDriver driver;
     private Uri appURL = new Uri("https://mantis-prova.base2.com.br");
+    //private Uri appURL = new Uri("http://localhost/mantis");
     private WebElement element;
     private bool isVisible;
+    //private string user = "administrator";
+    //private string pwd = "root";
     private string user = "VANDER_EVARISTO";
     private string pwd = "216132";
     private Helper helper = new Helper();
@@ -71,6 +74,58 @@ namespace Base2Automation
       element = helper.elementByclassName("alert-danger");
       isVisible = element.Displayed;
       Assert.IsTrue(isVisible, "O teste de login com usuário inexistente foi bem sucedido!");
+    }
+
+    [TestMethod]
+    [TestCategory("Chrome")]
+    public void Deve_consegir_fazer_logout_no_sistema()
+    {
+      helper.login(user, pwd, appURL, driver);
+      element = helper.elementClassName("fa-angle-down");
+      element.Click();
+      element = helper.elementByclassName("fa-sign-out");
+      element.Click();
+    }
+
+    [TestMethod]
+    [TestCategory("Chrome")]
+    public void Deve_conseguir_as_configuracoes_da_conta_e_alterar_a_senha()
+    {
+      string newPwd = "216132";
+      helper.login(user, pwd, appURL, driver);
+      element = helper.elementXPath("//span[@class='user-info']");
+      element.Click();
+      element = helper.elementCss("a[href='/account_page.php']");
+      element.Click();
+      element = helper.elementById("password-current");
+      element.Click();
+      element.Clear();
+      element.SendKeys(pwd);
+
+      element = helper.elementById("password");
+      element.Click();
+      element.Clear();
+      element.SendKeys(newPwd);
+
+      element = helper.elementById("password-confirm");
+      element.Click();
+      element.Clear();
+      element.SendKeys(newPwd);
+
+      element = helper.elementXPath("//input[@type='submit' and @value='Atualizar Usuário']");
+      element.Click();
+
+      element = helper.elementClassName("fa-angle-down");
+      element.Click();
+      element = helper.elementByclassName("fa-sign-out");
+      element.Click();
+
+      helper.login(user, newPwd, appURL, driver);
+      string url = driver.Url;
+
+      Assert.IsTrue(driver.Url==url, "O login do usuário: " + user + " foi feito com sucesso após alteração da senha!");
+
+
     }
 
 
