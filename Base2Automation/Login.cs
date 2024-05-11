@@ -2,8 +2,6 @@
 using System;
 using OpenQA.Selenium;
 
-
-
 namespace Base2Automation
 {
   [TestClass]
@@ -11,11 +9,8 @@ namespace Base2Automation
   {
     private IWebDriver driver;
     private Uri appURL = new Uri("https://mantis-prova.base2.com.br");
-    //private Uri appURL = new Uri("http://localhost/mantis");
     private WebElement element;
     private bool isVisible;
-    //private string user = "administrator";
-    //private string pwd = "root";
     private string user = "VANDER_EVARISTO";
     private string pwd = "216132";
     private Helper helper = new Helper();
