@@ -88,28 +88,6 @@ namespace Base2Automation
     public WebElement elementCss(string element)
     {
       return (WebElement)driver.FindElement(By.CssSelector(element));
-    }
-
-    public string ExtractSubstring(string input, char delimiter)
-    {
-      // Encontra a posição do último caractere '=' na string
-      int lastIndex = input.LastIndexOf(delimiter);
-
-      // Se o caractere não for encontrado, retorna a string vazia
-      if (lastIndex == -1)
-      {
-        return string.Empty;
-      }
-
-      // Extrai a substring da posição do '=' até o final da string
-      string reversedSubstring = input.Substring(lastIndex);
-
-      // Inverte a substring extraída
-      char[] charArray = reversedSubstring.ToCharArray();
-      Array.Reverse(charArray);
-      reversedSubstring = new string(charArray);
-
-      return reversedSubstring;
-    }
+    }  
   }
 }
