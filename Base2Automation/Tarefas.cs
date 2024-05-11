@@ -9,21 +9,19 @@ namespace Base2Automation
   public class Tarefas
   {
     private IWebDriver driver;
-    //private Uri appURL = new Uri("https://mantis-prova.base2.com.br");
-    private Uri appURL = new Uri("http://localhost/mantis");
+    private Uri appURL = new Uri("https://mantis-prova.base2.com.br");
     private WebElement element;
-    private string user = "administrator";
-    private string pwd = "root";
-    //private string user = "VANDER_EVARISTO";
-    //private string pwd = "216132";
+    private string user = "VANDER_EVARISTO";
+    private string pwd = "216132";
     private Helper helper = new Helper();
+    private bool isVisible;
 
     #region Test Cases
     [TestMethod]
     [TestCategory("Chrome")]
     public void Deve_conseguir_Criar_Nova_Tarefa()
     {
-      helper.login(user,pwd,appURL,driver);
+      helper.login(user, pwd, appURL, driver);
       element = helper.elementClassName("fa-edit");
       element.Click();
       IWebElement categoria = helper.elementById("category_id");
@@ -71,7 +69,7 @@ namespace Base2Automation
       element.Click();
 
       element = helper.elementXPath("//*[@id='main-container']/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/table/tbody/tr[10]/td");
-      string text = element.GetAttribute("innerText");      
+      string text = element.GetAttribute("innerText");
       Assert.IsTrue(text.Contains(resumo), "A tarefa Foi incluída com sucesso!");
 
     }
@@ -105,6 +103,98 @@ namespace Base2Automation
       Assert.IsTrue(element.Displayed, "A tarefa foi aberta para edição com sucesso!");
     }
 
+    [TestMethod]
+    [TestCategory("Chrome")]
+    public void Deve_conseguir_clonar_tarefa()
+    {
+      Deve_conseguir_Criar_Nova_Tarefa();
+      element = helper.elementXPath("//tr//td[@class='bug-id']");
+      string bugId = element.GetAttribute("innerText");
+      element = helper.elementClassName("fa-dashboard");
+      element.Click();
+
+      if (helper.elementXPath($"//a[text()='{bugId}']").Text.Contains(bugId))
+      {
+        element = helper.elementXPath($"//a[text()='{bugId}']");
+      }
+      element.Click();
+
+      element = helper.elementXPath("//input[@value='Criar Clone' and @type='submit']");
+      element.Click();
+
+      element = helper.elementXPath("//input[@value='Criar Nova Tarefa' and @type='submit']");
+      element.Click();
+
+      element = helper.elementXPath("//tr//td[@class='bug-id']");
+
+
+      Assert.IsTrue(element.Displayed, "A tarefa foi clonada corretamente!");
+    }
+
+    [TestMethod]
+    [TestCategory("Chrome")]
+    public void Deve_conseguir_monitorar_tarefa()
+    {
+      Deve_conseguir_Criar_Nova_Tarefa();
+      element = helper.elementXPath("//tr//td[@class='bug-id']");
+      string bugId = element.GetAttribute("innerText");
+      element = helper.elementClassName("fa-dashboard");
+      element.Click();
+
+      if (helper.elementXPath($"//a[text()='{bugId}']").Text.Contains(bugId))
+      {
+        element = helper.elementXPath($"//a[text()='{bugId}']");
+      }
+      element.Click();
+
+      element = helper.elementXPath("//input[@value='Monitorar' and @type='submit']");
+      element.Click();
+
+      element = helper.elementClassName("fa-dashboard");
+      element.Click();
+
+      element = helper.elementXPath($"//*[@id='monitored']/div/div/div/table/tbody/tr/td/ a[text()='{bugId}']");
+
+      isVisible = element.Displayed;
+
+      Assert.IsTrue(isVisible, "O usuário agora está monitorando a tarefa: " + bugId);
+    }
+
+    [TestMethod]
+    [TestCategory("Chrome")]
+    public void Deve_conseguir_parar_de_monitorar_a_tarefa()
+    {
+      Deve_conseguir_Criar_Nova_Tarefa();
+      element = helper.elementXPath("//tr//td[@class='bug-id']");
+      string bugId = element.GetAttribute("innerText");
+      element = helper.elementClassName("fa-dashboard");
+      element.Click();
+
+      if (helper.elementXPath($"//a[text()='{bugId}']").Text.Contains(bugId))
+      {
+        element = helper.elementXPath($"//a[text()='{bugId}']");
+      }
+      element.Click();
+
+      element = helper.elementXPath("//input[@value='Monitorar' and @type='submit']");
+      element.Click();
+
+      element = helper.elementClassName("fa-dashboard");
+      element.Click();
+
+      element = helper.elementXPath($"//*[@id='monitored']/div/div/div/table/tbody/tr/td/ a[text()='{bugId}']");
+      element.Click();
+
+      element = helper.elementXPath("//input[@value='Parar de Monitorar'  and @type='submit']");
+      element.Click();
+
+      element = helper.elementXPath("//input[@value='Monitorar' and @type='submit']");
+
+      isVisible = element.Displayed;
+
+      Assert.IsTrue(isVisible, "O usuário não está mais moniturando a tarefa: " + bugId);
+    }
+
     #endregion
 
     #region Environment
@@ -120,8 +210,6 @@ namespace Base2Automation
     {
       driver.Quit();
     }
-
-
     #endregion
   }
 }
