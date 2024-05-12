@@ -73,7 +73,7 @@ namespace Base2Automation
 
     [TestMethod]
     [TestCategory("Chrome")]
-    public void Deve_consegir_fazer_logout_no_sistema()
+    public void Deve_conseguir_fazer_logout_no_sistema()
     {
       helper.login(user, pwd, appURL, driver);
       element = helper.elementClassName("fa-angle-down");
